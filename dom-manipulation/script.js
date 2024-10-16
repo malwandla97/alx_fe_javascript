@@ -1,5 +1,6 @@
 ["fetchQuotesFromServer"]
 ["await", "async"]
+["method", "POST", "headers", "Content-Type"]
 let quotes = [];
 
 function loadQuotes() {
