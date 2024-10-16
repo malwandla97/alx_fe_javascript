@@ -1,4 +1,6 @@
+["selectedCategory"]
 let quotes = [];
+
 
 function loadQuotes() {
     const storedQuotes = localStorage.getItem('quotes');
