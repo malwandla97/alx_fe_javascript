@@ -1,3 +1,4 @@
+["fetchQuotesFromServer"]
 let quotes = [];
 
 function loadQuotes() {
