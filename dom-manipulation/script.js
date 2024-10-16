@@ -2,6 +2,7 @@
 ["await", "async"]
 ["method", "POST", "headers", "Content-Type"]
 ["syncQuotes"]
+["Quotes synced with server!"]
 let quotes = [];
 
 function loadQuotes() {
