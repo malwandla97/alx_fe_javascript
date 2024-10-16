@@ -1,6 +1,4 @@
-["selectedCategory"]
 let quotes = [];
-
 
 function loadQuotes() {
     const storedQuotes = localStorage.getItem('quotes');
@@ -23,7 +21,8 @@ function saveQuotes() {
 function populateCategories() {
     const categoryFilter = document.getElementById("categoryFilter");
     const categories = [...new Set(quotes.map(quote => quote.category))];
-    
+
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>'; // Reset options
     categories.forEach(category => {
         const option = document.createElement("option");
         option.value = category;
@@ -43,10 +42,12 @@ function showRandomQuote() {
         const categoryFilter = document.getElementById("categoryFilter").value;
         return categoryFilter === "all" || quote.category === categoryFilter;
     });
+
     if (filteredQuotes.length === 0) {
         quoteDisplay.textContent = "No quotes available in this category.";
         return;
     }
+
     const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
     const randomQuote = filteredQuotes[randomIndex];
     quoteDisplay.textContent = `"${randomQuote.text}" - ${randomQuote.category}`;
@@ -64,6 +65,7 @@ function addQuote() {
         document.getElementById("newQuoteText").value = '';
         document.getElementById("newQuoteCategory").value = '';
         alert("Quote added!");
+        syncWithServer();
     } else {
         alert("Please fill in both fields!");
     }
@@ -88,6 +90,7 @@ function importFromJsonFile(event) {
         saveQuotes();
         populateCategories();
         alert('Quotes imported successfully!');
+        syncWithServer();
     };
     fileReader.readAsText(event.target.files[0]);
 }
@@ -98,6 +101,34 @@ function filterQuotes() {
     showRandomQuote();
 }
 
+function syncWithServer() {
+    // Simulate server interaction
+    fetch('https://jsonplaceholder.typicode.com/posts')
+        .then(response => response.json())
+        .then(serverQuotes => {
+            handleServerData(serverQuotes);
+        })
+        .catch(error => {
+            console.error('Error syncing with server:', error);
+        });
+}
+
+function handleServerData(serverQuotes) {
+    // Simple conflict resolution
+    const existingQuotes = new Set(quotes.map(q => q.text));
+    serverQuotes.forEach(serverQuote => {
+        if (!existingQuotes.has(serverQuote.title)) {
+            quotes.push({ text: serverQuote.title, category: "Imported" });
+        }
+    });
+    saveQuotes();
+    alert("Data synced with server!");
+    populateCategories();
+}
+
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 document.getElementById("exportQuotes").addEventListener("click", exportQuotes);
 loadQuotes();
+
+// Sync with server every 30 seconds
+setInterval(syncWithServer, 30000);
