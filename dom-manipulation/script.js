@@ -1,4 +1,5 @@
 ["fetchQuotesFromServer"]
+["await", "async"]
 let quotes = [];
 
 function loadQuotes() {
